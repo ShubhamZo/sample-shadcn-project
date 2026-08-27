@@ -3,36 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Users, CalendarCheck, CheckSquare, TriangleAlert, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-// import { Avatar, AvatarFallback } from "@base-ui/react";
 import { Avatar, AvatarFallback, AvatarBadge } from "@/components/ui/avatar";
 
-type AppointmentType = "Follow-up" | "Consultation" | "Check-up"
-type AppointmentStatusType = "confirmed" | "waiting" | "completed";
-type patientGenderType = "Male" | "Female";
-type lastVisitStatusType = "Stable" | "Follow-up";
+import { AppointmentDetails } from "@/data/dashboard-data";
+
 
 export default function DashboardPage() {
-
-  const AppointmentDetails: {
-    patientId: string;
-    patient: string;
-    patientInitials: string;
-    age: number;
-    gender?: patientGenderType;
-    visitingTime?: string;
-    visitingType: AppointmentType;
-    Status: AppointmentStatusType;
-    lastVisitDate?: string;
-    lastVisitStatus?: lastVisitStatusType;
-  }[]
-    = [
-      { patientId: "PT-10245", patient: "Emily Johnson", patientInitials: "EJ", age: 32, gender: "Female", visitingTime: "09:30 AM", visitingType: "Follow-up", Status: "confirmed", lastVisitDate: "Aug 18", lastVisitStatus: "Stable" },
-      { patientId: "PT-10312", patient: "Michael Brown", patientInitials: "MB", age: 45, gender: "Male", visitingTime: "10:30 AM", visitingType: "Consultation", Status: "waiting", lastVisitDate: "Aug 31", lastVisitStatus: "Follow-up" },
-      { patientId: "PT-10198", patient: "Olivia Davis", patientInitials: "OD", age: 28, gender: "Male", visitingTime: "11:15 AM", visitingType: "Check-up", Status: "confirmed", lastVisitDate: "Dec 17", lastVisitStatus: "Stable" },
-      { patientId: "PT-10101", patient: "James Wilson", patientInitials: "JW", age: 35, gender: "Female", visitingTime: "11:45 AM", visitingType: "Follow-up", Status: "completed" },
-    ];
-
-
 
   return (
     <div>
@@ -84,13 +60,7 @@ export default function DashboardPage() {
           iconBg="bg-[#FDE8E7]"
           subtitleColor="text-destructive"
         />
-      </div>
-
-      {/* TODO: Interns add the following sections:
-          - Today's Appointments table  (shadcn Table + Badge + Avatar)
-          - Clinical Alerts card        (Card with pastel backgrounds)
-          - Recent Patients table       (shadcn Table + Badge)
-      */}
+      </div>  
 
       <div className="flex flex-col">
         {/* ------------------------Today's Appointmetn Table ------------------------------------------------------*/}
@@ -118,14 +88,18 @@ export default function DashboardPage() {
                         <TableCell>
                           <div className="flex items-center">
                             <Avatar>
-                              <AvatarFallback>{appointment.patientInitials}</AvatarFallback>
+                              <AvatarFallback color={appointment.avatarColor}>{appointment.patientInitials}</AvatarFallback>
                             </Avatar>
                             <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
                           </div>
                         </TableCell>
                         <TableCell className=" py-[14px] px-[20px]">{appointment.visitingTime}</TableCell>
                         <TableCell className=" py-[14px] px-[20px]">{appointment.visitingType}</TableCell>
-                        <TableCell className=" py-[14px] px-[20px]"><StatusBadgeType status={appointment.Status} /></TableCell>
+                        <TableCell className=" py-[14px] px-[20px]">
+                          <Badge variant={appointment.Status}>
+                            {appointment.Status}
+                          </Badge>
+                        </TableCell>
                         <TableCell className="text-right"><Button variant="link">View</Button></TableCell>
                       </TableRow>
                     ))
@@ -220,7 +194,7 @@ export default function DashboardPage() {
                           <TableCell>
                             <div className="flex items-center">
                               <Avatar>
-                                <AvatarFallback>{appointment.patientInitials}</AvatarFallback>
+                                <AvatarFallback color={appointment.avatarColor}>{appointment.patientInitials}</AvatarFallback>
                               </Avatar>
                               <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
                             </div>
@@ -228,7 +202,11 @@ export default function DashboardPage() {
                           <TableCell className=" py-[14px] px-[20px]">{appointment.patientId}</TableCell>
                           <TableCell className=" py-[14px] px-[20px]">{appointment.age} - {appointment.gender}</TableCell>
                           <TableCell className=" py-[14px] px-[20px]">{appointment.lastVisitDate}</TableCell>
-                          <TableCell className=" py-[14px] px-[20px]"><LastVisitedStatusBadgeType lastVisitedStatus={appointment.lastVisitStatus!} /></TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">
+                            <Badge variant={appointment.lastVisitStatus === "Stable" ? "stable" : "follow_up"}>
+                              {appointment.lastVisitStatus?.toWellFormed()}
+                            </Badge>
+                          </TableCell>
                           <TableCell className="text-right"><Button variant="link">View</Button></TableCell>
                         </TableRow>
                       ))
@@ -281,49 +259,4 @@ function StatsCard({
       </CardContent>
     </Card>
   );
-}
-
-
-{/* Function to return the badge type based on the status - Confirnmed, Waiting and completed*/ }
-
-function StatusBadgeType({ status }: { status: AppointmentStatusType }) {
-  if (status === "confirmed")
-    return (
-      <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
-        {status}
-      </Badge>
-    )
-
-  if (status === "waiting")
-    return (
-      <Badge className=" bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300">
-        {status}
-      </Badge>
-    )
-
-  if (status === "completed")
-    return (
-      <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">
-        {status}
-      </Badge>
-    )
-}
-
-
-{/* Function to return the badge based on the Last Visit Status - Stable and Follow-up */ }
-function LastVisitedStatusBadgeType({ lastVisitedStatus }: { lastVisitedStatus: lastVisitStatusType }) {
-
-  if (lastVisitedStatus === "Stable")
-    return (
-      <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
-        {lastVisitedStatus}
-      </Badge>
-    )
-
-  if (lastVisitedStatus === "Follow-up")
-    return (
-      <Badge className="bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300">
-        {lastVisitedStatus}
-      </Badge>
-    )
 }

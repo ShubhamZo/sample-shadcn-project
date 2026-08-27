@@ -1,9 +1,27 @@
 "use client"
 
 import * as React from "react"
-import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
+import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar";
+import { cva, VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+
+const avatarFallbackVariants = cva(
+  "flex size-full items-center justify-center rounded-full font-medium",
+  {
+    variants: {
+      color: {
+        blue: "text-[#5B9BC2] bg-[#DCECF8]",
+        green: "text-[#5FB8A8] bg-[#E8F6F3]",
+        purple: "text-[#9A83C4] bg-[#F0EAF8]",
+        red: "text-[#D97973] bg-[#FDE8E7]"
+      }
+    },
+    defaultVariants : {
+      color: "purple"
+    }
+  }
+)
 
 function Avatar({
   className,
@@ -40,15 +58,18 @@ function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
 
 function AvatarFallback({
   className,
+  color="purple",
   ...props
-}: AvatarPrimitive.Fallback.Props) {
+}: AvatarPrimitive.Fallback.Props & VariantProps<typeof avatarFallbackVariants>) {
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
       className={cn(
         "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground group-data-[size=sm]/avatar:text-xs",
+        avatarFallbackVariants({color}), 
         className
       )}
+
       {...props}
     />
   )

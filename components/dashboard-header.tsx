@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Bell, Search } from "lucide-react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function DashboardHeader() {
   return (
@@ -9,6 +10,10 @@ export function DashboardHeader() {
       <h1 className="text-lg font-semibold">Dashboard</h1>
 
       <div className="flex items-center gap-3">
+        
+        {/* Dark Mode */}
+        <ModeToggle />
+
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
