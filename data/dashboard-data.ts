@@ -9,55 +9,81 @@ export const AppointmentDetails: {
     patientInitials: string;
     age: number;
     gender?: patientGenderType;
+    visitingDate?: string;
     visitingTime?: string;
     visitingType: AppointmentType;
     Status: AppointmentStatusType;
     lastVisitDate?: string;
     lastVisitStatus?: lastVisitStatusType;
     avatarColor: "blue" | "green" | "purple" | "red";
-  }[]
+    bloodGroup: string;
+}[]
     = [
-      { patientId: "PT-10245", 
-        patient: "Emily Johnson", 
-        patientInitials: "EJ", 
-        age: 32, 
-        gender: "Female", 
-        visitingTime: "09:30 AM", 
-        visitingType: "Follow-up", 
-        Status: "confirmed", 
-        lastVisitDate: "Aug 18", 
-        lastVisitStatus: "Stable" ,
-        avatarColor: "blue"
-    },
-      { patientId: "PT-10312", 
-        patient: "Michael Brown", 
-        patientInitials: "MB", 
-        age: 45, gender: "Male", 
-        visitingTime: "10:30 AM", 
-        visitingType: "Consultation", 
-        Status: "waiting", 
-        lastVisitDate: "Aug 31", 
-        lastVisitStatus: "Follow_up",
-        avatarColor: "green" 
-    },
-      { patientId: "PT-10198", 
-        patient: "Olivia Davis", 
-        patientInitials: "OD", 
-        age: 28, gender: "Male", 
-        visitingTime: "11:15 AM", 
-        visitingType: "Check-up", 
-        Status: "confirmed", 
-        lastVisitDate: "Dec 17", 
-        lastVisitStatus: "Stable",
-        avatarColor: "purple" 
-    },
-      { patientId: "PT-10101", 
-        patient: "James Wilson", 
-        patientInitials: "JW", 
-        age: 35, gender: "Female", 
-        visitingTime: "11:45 AM", 
-        visitingType: "Follow-up", 
-        Status: "completed",
-        avatarColor: "red"
-    },
+        {
+            patientId: "PT-10245",
+            patient: "Emily Johnson",
+            patientInitials: "EJ",
+            age: 32,
+            gender: "Female",
+            visitingDate: "2026-08-28",
+            visitingTime: "09:30 AM",
+            visitingType: "Follow-up",
+            Status: "confirmed",
+            lastVisitDate: "2026-08-26",
+            lastVisitStatus: "Stable",
+            avatarColor: "blue",
+            bloodGroup: "AB+"
+        },
+        {
+            patientId: "PT-10312",
+            patient: "Michael Brown",
+            patientInitials: "MB",
+            age: 45, gender: "Male",
+            visitingDate: "2026-08-28",
+            visitingTime: "10:30 AM",
+            visitingType: "Consultation",
+            Status: "waiting",
+            lastVisitDate: "2026-08-25",
+            lastVisitStatus: "Follow_up",
+            avatarColor: "green",
+            bloodGroup: "B+"
+        },
+        {
+            patientId: "PT-10198",
+            patient: "Olivia Davis",
+            patientInitials: "OD",
+            age: 28, gender: "Male",
+            visitingDate: "2026-08-28",
+            visitingTime: "11:15 AM",
+            visitingType: "Check-up",
+            Status: "confirmed",
+            lastVisitDate: "2026-08-24",
+            lastVisitStatus: "Stable",
+            avatarColor: "purple",
+            bloodGroup: "AB-"
+        },
+        {
+            patientId: "PT-10101",
+            patient: "James Wilson",
+            patientInitials: "JW",
+            age: 35, gender: "Female",
+            visitingDate: "2026-08-28",
+            visitingTime: "11:45 AM",
+            visitingType: "Follow-up",
+            Status: "completed",
+            avatarColor: "red",
+            bloodGroup: "O+"
+        },
+        {
+            patientId: "PT-10102",
+            patient: "Sarla Joshi",
+            patientInitials: "SJ",
+            age: 35, gender: "Female",
+            visitingDate: "2026-08-25",
+            visitingTime: "11:45 AM",
+            visitingType: "Check-up",
+            Status: "confirmed",
+            avatarColor: "green",
+            bloodGroup: "A+"
+        }
     ];

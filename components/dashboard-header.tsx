@@ -1,16 +1,23 @@
+"use client";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Bell, Search } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
+import { usePathname } from "next/navigation";
 
 export function DashboardHeader() {
+
+  const pathname = usePathname();
+  const headerTitle = pathname.split("/")[1]
+
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-7">
-      <h1 className="text-lg font-semibold">Dashboard</h1>
+      <h1 className="text-lg font-semibold capitalize">{headerTitle ? headerTitle : "Dashboard"}</h1>
 
       <div className="flex items-center gap-3">
-        
+
         {/* Dark Mode */}
         <ModeToggle />
 
@@ -39,3 +46,6 @@ export function DashboardHeader() {
     </header>
   );
 }
+
+
+{/* */}

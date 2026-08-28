@@ -1,6 +1,9 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Users, CalendarCheck, CheckSquare, TriangleAlert, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarBadge } from "@/components/ui/avatar";
@@ -9,6 +12,9 @@ import { AppointmentDetails } from "@/data/dashboard-data";
 
 
 export default function DashboardPage() {
+
+  const router = useRouter();
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div>
@@ -60,7 +66,7 @@ export default function DashboardPage() {
           iconBg="bg-[#FDE8E7]"
           subtitleColor="text-destructive"
         />
-      </div>  
+      </div>
 
       <div className="flex flex-col">
         {/* ------------------------Today's Appointmetn Table ------------------------------------------------------*/}
@@ -68,12 +74,14 @@ export default function DashboardPage() {
           <Card className="flex-[7]">
             <CardHeader className="content-center border-b">
               <CardTitle>Today's Appointment</CardTitle>
-              <CardAction><Button variant="link">View All</Button></CardAction>
+              <CardAction>
+                <Button variant="link" onClick={() => router.push("/patients")}>View All</Button>
+              </CardAction>
             </CardHeader>
             <CardContent className="font-medium text-muted-foreground p-0">
               <Table>
                 <TableHeader className="text-xs">
-                  <TableRow>
+                  <TableRow className="hover:bg-transparent">
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">PATIENT</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">TIME</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">TYPE</TableHead>
@@ -83,26 +91,29 @@ export default function DashboardPage() {
                 </TableHeader>
                 <TableBody className="text-sm">
                   {
-                    AppointmentDetails.map((appointment) => (
-                      <TableRow key={appointment.patientId}>
-                        <TableCell>
-                          <div className="flex items-center">
-                            <Avatar>
-                              <AvatarFallback color={appointment.avatarColor}>{appointment.patientInitials}</AvatarFallback>
-                            </Avatar>
-                            <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className=" py-[14px] px-[20px]">{appointment.visitingTime}</TableCell>
-                        <TableCell className=" py-[14px] px-[20px]">{appointment.visitingType}</TableCell>
-                        <TableCell className=" py-[14px] px-[20px]">
-                          <Badge variant={appointment.Status}>
-                            {appointment.Status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right"><Button variant="link">View</Button></TableCell>
-                      </TableRow>
-                    ))
+                    AppointmentDetails.filter((appointment) => appointment.visitingDate === today)
+                      .map((appointment) => (
+                        <TableRow key={appointment.patientId}>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <Avatar>
+                                <AvatarFallback color={appointment.avatarColor}>{appointment.patientInitials}</AvatarFallback>
+                              </Avatar>
+                              <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">{appointment.visitingTime}</TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">{appointment.visitingType}</TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">
+                            <Badge variant={appointment.Status}>
+                              {appointment.Status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="link" onClick={() => router.push(`/patients/${appointment.patientId}`)}>View</Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
                   }
                 </TableBody>
               </Table>
@@ -130,7 +141,7 @@ export default function DashboardPage() {
                     <div className="mt-1.5 text-xs text-destructive">10 minutes remaining</div>
                   </div>
                 </Card>
-                
+
                 <Card className="p-3.5 bg-[#FFF2D9]">
                   <div>
                     <CardHeader className=" p-0">
@@ -175,7 +186,7 @@ export default function DashboardPage() {
             <CardContent className="font-medium text-muted-foreground p-0">
               <Table>
                 <TableHeader className="text-xs pt-0">
-                  <TableRow>
+                  <TableRow  className="hover:bg-transparent">
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">PATIENT</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">ID</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">AGE/GENDER</TableHead>
@@ -201,13 +212,17 @@ export default function DashboardPage() {
                           </TableCell>
                           <TableCell className=" py-[14px] px-[20px]">{appointment.patientId}</TableCell>
                           <TableCell className=" py-[14px] px-[20px]">{appointment.age} - {appointment.gender}</TableCell>
-                          <TableCell className=" py-[14px] px-[20px]">{appointment.lastVisitDate}</TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">
+                            {appointment.lastVisitDate ? formatLastVisitDate(appointment.lastVisitDate) : "-"}
+                          </TableCell>
                           <TableCell className=" py-[14px] px-[20px]">
                             <Badge variant={appointment.lastVisitStatus === "Stable" ? "stable" : "follow_up"}>
-                              {appointment.lastVisitStatus?.toWellFormed()}
+                              {appointment.lastVisitStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-right"><Button variant="link">View</Button></TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="link" onClick={() => router.push(`/patients/${appointment.patientId}`)}>View</Button>
+                          </TableCell>
                         </TableRow>
                       ))
                   }
@@ -259,4 +274,20 @@ function StatsCard({
       </CardContent>
     </Card>
   );
+}
+
+{/* Function to return Date As MONTH - DAY */ }
+
+function formatLastVisitDate(date: string) {
+  const visitDate = new Date(date);
+
+  const month = visitDate.toLocaleString("en-US", {
+    month: "short"
+  });
+
+  const day = visitDate.toLocaleString("en-US", {
+    day: "2-digit"
+  });
+
+  return `${month}-${day}`;
 }
