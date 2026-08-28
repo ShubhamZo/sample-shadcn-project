@@ -1,38 +1,20 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Users, CalendarCheck, CheckSquare, TriangleAlert, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-// import { Avatar, AvatarFallback } from "@base-ui/react";
 import { Avatar, AvatarFallback, AvatarBadge } from "@/components/ui/avatar";
 
-type AppointmentType = "Follow-up" | "Consultation" | "Check-up"
-type AppointmentStatusType = "confirmed" | "waiting" | "completed";
-type patientGenderType = "Male" | "Female";
-type lastVisitStatusType = "Stable" | "Follow-up";
+import { AppointmentDetails } from "@/data/dashboard-data";
+
 
 export default function DashboardPage() {
 
-  const AppointmentDetails: {
-    patientId: string;
-    patient: string;
-    patientInitials: string;
-    age: number;
-    gender?: patientGenderType;
-    visitingTime?: string;
-    visitingType: AppointmentType;
-    Status: AppointmentStatusType;
-    lastVisitDate?: string;
-    lastVisitStatus?: lastVisitStatusType;
-  }[]
-    = [
-      { patientId: "PT-10245", patient: "Emily Johnson", patientInitials: "EJ", age: 32, gender: "Female", visitingTime: "09:30 AM", visitingType: "Follow-up", Status: "confirmed", lastVisitDate: "Aug 18", lastVisitStatus: "Stable" },
-      { patientId: "PT-10312", patient: "Michael Brown", patientInitials: "MB", age: 45, gender: "Male", visitingTime: "10:30 AM", visitingType: "Consultation", Status: "waiting", lastVisitDate: "Aug 31", lastVisitStatus: "Follow-up" },
-      { patientId: "PT-10198", patient: "Olivia Davis", patientInitials: "OD", age: 28, gender: "Male", visitingTime: "11:15 AM", visitingType: "Check-up", Status: "confirmed", lastVisitDate: "Dec 17", lastVisitStatus: "Stable" },
-      { patientId: "PT-10101", patient: "James Wilson", patientInitials: "JW", age: 35, gender: "Female", visitingTime: "11:45 AM", visitingType: "Follow-up", Status: "completed" },
-    ];
-
-
+  const router = useRouter();
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div>
@@ -86,24 +68,20 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* TODO: Interns add the following sections:
-          - Today's Appointments table  (shadcn Table + Badge + Avatar)
-          - Clinical Alerts card        (Card with pastel backgrounds)
-          - Recent Patients table       (shadcn Table + Badge)
-      */}
-
       <div className="flex flex-col">
         {/* ------------------------Today's Appointmetn Table ------------------------------------------------------*/}
         <div className="flex flex-row gap-5">
           <Card className="flex-[7]">
             <CardHeader className="content-center border-b">
               <CardTitle>Today's Appointment</CardTitle>
-              <CardAction><Button variant="link">View All</Button></CardAction>
+              <CardAction>
+                <Button variant="link" onClick={() => router.push("/patients")}>View All</Button>
+              </CardAction>
             </CardHeader>
             <CardContent className="font-medium text-muted-foreground p-0">
               <Table>
                 <TableHeader className="text-xs">
-                  <TableRow>
+                  <TableRow className="hover:bg-transparent">
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">PATIENT</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">TIME</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">TYPE</TableHead>
@@ -113,22 +91,29 @@ export default function DashboardPage() {
                 </TableHeader>
                 <TableBody className="text-sm">
                   {
-                    AppointmentDetails.map((appointment) => (
-                      <TableRow key={appointment.patientId}>
-                        <TableCell>
-                          <div className="flex items-center">
-                            <Avatar>
-                              <AvatarFallback>{appointment.patientInitials}</AvatarFallback>
-                            </Avatar>
-                            <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className=" py-[14px] px-[20px]">{appointment.visitingTime}</TableCell>
-                        <TableCell className=" py-[14px] px-[20px]">{appointment.visitingType}</TableCell>
-                        <TableCell className=" py-[14px] px-[20px]"><StatusBadgeType status={appointment.Status} /></TableCell>
-                        <TableCell className="text-right"><Button variant="link">View</Button></TableCell>
-                      </TableRow>
-                    ))
+                    AppointmentDetails.filter((appointment) => appointment.visitingDate === today)
+                      .map((appointment) => (
+                        <TableRow key={appointment.patientId}>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <Avatar>
+                                <AvatarFallback color={appointment.avatarColor}>{appointment.patientInitials}</AvatarFallback>
+                              </Avatar>
+                              <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">{appointment.visitingTime}</TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">{appointment.visitingType}</TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">
+                            <Badge variant={appointment.Status}>
+                              {appointment.Status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="link" onClick={() => router.push(`/patients/${appointment.patientId}`)}>View</Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
                   }
                 </TableBody>
               </Table>
@@ -156,7 +141,7 @@ export default function DashboardPage() {
                     <div className="mt-1.5 text-xs text-destructive">10 minutes remaining</div>
                   </div>
                 </Card>
-                
+
                 <Card className="p-3.5 bg-[#FFF2D9]">
                   <div>
                     <CardHeader className=" p-0">
@@ -201,7 +186,7 @@ export default function DashboardPage() {
             <CardContent className="font-medium text-muted-foreground p-0">
               <Table>
                 <TableHeader className="text-xs pt-0">
-                  <TableRow>
+                  <TableRow  className="hover:bg-transparent">
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">PATIENT</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">ID</TableHead>
                     <TableHead className="text-muted-foreground py-[10px] px-[20px]">AGE/GENDER</TableHead>
@@ -220,16 +205,24 @@ export default function DashboardPage() {
                           <TableCell>
                             <div className="flex items-center">
                               <Avatar>
-                                <AvatarFallback>{appointment.patientInitials}</AvatarFallback>
+                                <AvatarFallback color={appointment.avatarColor}>{appointment.patientInitials}</AvatarFallback>
                               </Avatar>
                               <span className="text-foreground py-[14px] px-[20px]">{appointment.patient}</span>
                             </div>
                           </TableCell>
                           <TableCell className=" py-[14px] px-[20px]">{appointment.patientId}</TableCell>
                           <TableCell className=" py-[14px] px-[20px]">{appointment.age} - {appointment.gender}</TableCell>
-                          <TableCell className=" py-[14px] px-[20px]">{appointment.lastVisitDate}</TableCell>
-                          <TableCell className=" py-[14px] px-[20px]"><LastVisitedStatusBadgeType lastVisitedStatus={appointment.lastVisitStatus!} /></TableCell>
-                          <TableCell className="text-right"><Button variant="link">View</Button></TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">
+                            {appointment.lastVisitDate ? formatLastVisitDate(appointment.lastVisitDate) : "-"}
+                          </TableCell>
+                          <TableCell className=" py-[14px] px-[20px]">
+                            <Badge variant={appointment.lastVisitStatus === "Stable" ? "stable" : "follow_up"}>
+                              {appointment.lastVisitStatus}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="link" onClick={() => router.push(`/patients/${appointment.patientId}`)}>View</Button>
+                          </TableCell>
                         </TableRow>
                       ))
                   }
@@ -283,47 +276,18 @@ function StatsCard({
   );
 }
 
+{/* Function to return Date As MONTH - DAY */ }
 
-{/* Function to return the badge type based on the status - Confirnmed, Waiting and completed*/ }
+function formatLastVisitDate(date: string) {
+  const visitDate = new Date(date);
 
-function StatusBadgeType({ status }: { status: AppointmentStatusType }) {
-  if (status === "confirmed")
-    return (
-      <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
-        {status}
-      </Badge>
-    )
+  const month = visitDate.toLocaleString("en-US", {
+    month: "short"
+  });
 
-  if (status === "waiting")
-    return (
-      <Badge className=" bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300">
-        {status}
-      </Badge>
-    )
+  const day = visitDate.toLocaleString("en-US", {
+    day: "2-digit"
+  });
 
-  if (status === "completed")
-    return (
-      <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">
-        {status}
-      </Badge>
-    )
-}
-
-
-{/* Function to return the badge based on the Last Visit Status - Stable and Follow-up */ }
-function LastVisitedStatusBadgeType({ lastVisitedStatus }: { lastVisitedStatus: lastVisitStatusType }) {
-
-  if (lastVisitedStatus === "Stable")
-    return (
-      <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
-        {lastVisitedStatus}
-      </Badge>
-    )
-
-  if (lastVisitedStatus === "Follow-up")
-    return (
-      <Badge className="bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300">
-        {lastVisitedStatus}
-      </Badge>
-    )
+  return `${month}-${day}`;
 }

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Clinical Dashboard",
 }
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -29,7 +29,10 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange>{children}</ThemeProvider>
       </body>
     </html>
   )
