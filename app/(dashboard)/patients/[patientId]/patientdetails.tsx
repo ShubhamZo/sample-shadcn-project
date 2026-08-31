@@ -10,8 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 
 import type { patientGenderType, AppointmentStatusType, AppointmentType, lastVisitStatusType } from "@/data/dashboard-data";
-
-type Patient = {
+import { PatientInformation } from "./patient-info";
+import { PatientVitals } from "./patient-vitals";
+export type Patient = {
     patientId: string;
     patient: string;
     patientInitials: string;
@@ -80,18 +81,15 @@ export default function PatientDetails({ patient }: PatientDetailsPropType) {
                     <TabsTrigger className=" px-[20px]" value="documents">Documents</TabsTrigger>
                 </TabsList>
                 <Separator />
-                <div className="flex mt-5 mb-5 gap-5">
-                    <div className="flex-5">
-                        <TabsContent value="overview">
+                <div className="flex mt-5 mb-5 gap-5 items-stretch">
+                    <div className="flex-1">
+                        <TabsContent value="overview" className="h-full">
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Patient Details</CardTitle>
-                                    <CardDescription>
-                                        Complete patients details
-                                    </CardDescription>
                                 </CardHeader>
-                                <CardContent className="text-sm text-muted-foreground">
-                                    Take Care!
+                                <CardContent >
+                                    <PatientInformation patient={patient} />
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -135,14 +133,13 @@ export default function PatientDetails({ patient }: PatientDetailsPropType) {
                             </Card>
                         </TabsContent>
                     </div>
-                    <div className="flex-5">
-                        <Card>
+                    <div className="flex-1">
+                        <Card className="h-full">
                             <CardHeader>
                                 <CardTitle> Current Vitals </CardTitle>
-                                <CardDescription> See all the vitals at a place</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                Vitals!
+                                <PatientVitals />
                             </CardContent>
                         </Card>
                     </div>
