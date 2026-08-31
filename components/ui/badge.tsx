@@ -24,7 +24,8 @@ const badgeVariants = cva(
         waiting: "bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300",
         completed: "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
         stable: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
-        follow_up: "bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300"
+        follow_up: "bg-[#FFF2D9] text-[#8A6A2F] dark:bg-red-950 dark:text-red-300",
+        vitals: "bg-white mt-0.5 py-[2px] px-[8px] text-[#3F8056] text-[11px] rounded-[20px] inline-block"
       },
     },
     defaultVariants: {
